@@ -22,14 +22,15 @@ Proyecto Final Metodos Numericos/
 - Pip (administrador de paquetes de Python)
 - Flask
 - NumPy
-
+- Sympy
+  
 ## Configuración y Ejecución
 
 ### Pasos para Ejecutar 
 
 1. Clonar el Repositorio
 
-git clone https://github.com/
+git clone https://github.com/Viru154/Metodo-de-Newthon-Rahpson
 cd repositorio
 
 2. Instalar dependecias 
