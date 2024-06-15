@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newton-Raphson Solver</title>
+    <!-- Vincula el archivo CSS optimizado -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- Contenedor de botones en la esquina superior derecha, dispuestos verticalmente -->
+    <div id="buttons-container">
+        <button id="previous-problems">Historial</button>
+        <button id="about-program">Acerca de:</button>
+        <button id="refresh-chart" style="display:none;">Actualizar Gráfica</button>
+    </div>
+    <div class="container">
+        <h1>Método de Newton-Raphson</h1>
+        <!-- Formulario para entrada de datos -->
+        <form id="nr-form">
+            <label for="function">Función (f(x)):</label>
+            <input type="text" id="function" name="function" required>
+            <label for="initial">Estimación Inicial (x0):</label>
+            <input type="number" id="initial" name="initial" required>
+            <label for="iterations">Máximo de Iteraciones:</label>
+            <input type="number" id="iterations" name="iterations" required>
+            <button type="submit">Calcular</button>
+        </form>
+        <!-- Lista de iteraciones -->
+        <div id="iterations-list"></div>
+        <!-- Botón y canvas para mostrar la gráfica -->
+        <button id="show-chart" style="display:none;">Mostrar Gráfica</button>
+        <canvas id="iterations-chart" width="400" height="400" style="display:none;"></canvas>
+    </div>
+
+    <!-- Carga de librería Chart.js para gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let chart; // Variable global para la instancia de Chart.js
+
+        // Evento de envío del formulario
+        document.getElementById('nr-form').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Previene el comportamiento por defecto del formulario
+            
+            const form = event.target;
+            let funcInput = form.function.value;
+            funcInput = funcInput.replace(/−/g, '-');  // Reemplaza cualquier carácter de menos largo con el carácter estándar
+            funcInput = funcInput.replace(/\^/g, '**');  // Reemplaza el símbolo de exponente
+
+            const data = {
+                function: funcInput,
+                initial: parseFloat(form.initial.value),
+                iterations: parseInt(form.iterations.value)
+            };
+
+            // Envía los datos al servidor para calcular las iteraciones
+            const response = await fetch('/solve', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            
+            if (result.error) {
+                alert(result.error); // Muestra un mensaje de error si ocurre un problema
+            } else {
+                // Simula un retraso para la animación de cálculo
+                document.getElementById('iterations-list').innerHTML = '<h2>Calculando...</h2>';
+                setTimeout(() => {
+                    // Muestra las iteraciones calculadas
+                    const iterationsList = document.getElementById('iterations-list');
+                    iterationsList.innerHTML = '<h2>Iteraciones:</h2>';
+                    result.iterations.forEach((iteration, index) => {
+                        const listItem = document.createElement('div');
+                        listItem.textContent = `Iteración ${index + 1}: x = ${iteration.toFixed(6)}`;
+                        listItem.className = 'iteration-item';
+                        iterationsList.appendChild(listItem);
+                    });
+
+                    // Actualiza o muestra la gráfica
+                    if (chart) {
+                        updateChart(chart, result.iterations);
+                    } else {
+                        showChart(result.iterations);
+                    }
+
+                    // Muestra el botón para actualizar la gráfica
+                    const refreshChartButton = document.getElementById('refresh-chart');
+                    refreshChartButton.style.display = 'block';
+                }, 2000); // Simulación de retraso de 2 segundos
+            }
+        });
+
+        // Evento para el botón "Actualizar Gráfica"
+        document.getElementById('refresh-chart').addEventListener('click', function() {
+            refreshChart(chart); // Actualiza la gráfica utilizando la instancia de Chart.js
+        });
+
+        // Función para mostrar la gráfica inicialmente
+        function showChart(iterations) {
+            const ctx = document.getElementById('iterations-chart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: iterations.map((_, i) => i + 1),
+                    datasets: [{
+                        label: 'Iteraciones de Newton-Raphson',
+                        data: iterations,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Iteración',
+                                color: '#e0e0e0'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Valor de x',
+                                color: '#e0e0e0'
+                            }
+                        }
+                    }
+                }
+            });
+            document.getElementById('iterations-chart').style.display = 'block';
+            document.getElementById('show-chart').style.display = 'none'; // Oculta el botón "Mostrar Gráfica"
+        }
+
+        // Función para actualizar la gráfica
+        function updateChart(chart, iterations) {
+            chart.data.labels = iterations.map((_, i) => i + 1);
+            chart.data.datasets[0].data = iterations;
+            chart.update();
+        }
+
+        // Función para refrescar la gráfica al hacer click en "Actualizar Gráfica"
+        function refreshChart(chart) {
+            // Simula un pequeño retraso antes de actualizar la gráfica
+            setTimeout(() => {
+                const ctx = document.getElementById('iterations-chart').getContext('2d');
+                const iterations = chart.data.datasets[0].data;
+                updateChart(chart, iterations);
+            }, 500); // Simulación de retraso de 0.5 segundos
+        }
+
+        // Evento para el botón "Problemas Anteriores"
+        document.getElementById('previous-problems').addEventListener('click', function() {
+            window.open('/previous', '_blank'); // Abre la página de problemas anteriores en una nueva pestaña
+        });
+
+        // Evento para el botón "Acerca del Programa"
+        document.getElementById('about-program').addEventListener('click', function() {
+            alert('Este programa resuelve ecuaciones usando el método de Newton-Raphson.\n\nPrograma realizado por: Alexander Galvez'); // Muestra una ventana emergente con información sobre el programa
+        });
+    </script>
+</body>
+</html>

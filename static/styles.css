@@ -1,0 +1,87 @@
+:root {
+    --bg-color: #121212; /* Color de fondo */
+    --text-color: #e0e0e0; /* Color del texto */
+    --input-bg-color: #333333; /* Color de fondo del input */
+    --input-border-color: #555555; /* Color del borde del input */
+    --button-bg-color: #f80808; /* Color de fondo del botón */
+    --button-hover-bg-color: #1565c0; /* Color de fondo del botón al pasar el cursor */
+    --font-family: 'Comic Sans MS', cursive, sans-serif; /* Fuente principal */
+}
+
+body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    margin: 20px;
+    background-color: #121212; /* Fondo oscuro */
+    color: #e0e0e0; /* Texto claro */
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center; /* Centrar contenido */
+}
+
+form {
+    display: flex;
+    flex-direction: column; /* Alinear verticalmente */
+    align-items: center; /* Centrar formularios */
+}
+
+input[type="text"],
+input[type="number"] {
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 1em;
+    background-color: #333333; /* Fondo del cuadro de texto */
+    color: #e0e0e0; /* Color del texto del cuadro */
+    border: 1px solid #555555; /* Borde del cuadro */
+    border-radius: 5px; /* Bordes redondeados */
+    width: 80%; /* Ajustar ancho */
+    max-width: 400px; /* Ancho máximo */
+}
+
+button {
+    margin: 10px 0;
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #f80808; /* Fondo del botón */
+    color: #ffffff; /* Color del texto del botón */
+    border: none;
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1565c0; /* Fondo del botón al pasar el cursor */
+}
+
+canvas {
+    margin-top: 20px;
+}
+
+#iterations-list {
+    margin-top: 20px;
+    font-size: 1em;
+    text-align: center; /* Centrar iteraciones */
+}
+
+.iteration-item {
+    margin: 5px 0; /* Espaciado entre iteraciones */
+}
+
+/* Estilos para el contenedor de botones */
+#buttons-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column; /* Disposición vertical */
+    align-items: flex-end; /* Alinear al extremo derecho */
+}
+
+#buttons-container button {
+    margin-bottom: 10px;
+    width: auto;
+    white-space: nowrap;
+}

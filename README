@@ -1,0 +1,47 @@
+# Proyecto Final de Métodos Numéricos
+
+Este proyecto implementa el método de Newton-Raphson para resolver ecuaciones no lineales,
+utilizando una interfaz gráfica basada en HTML y un backend en Flask.
+
+## Estructura del Proyecto
+
+Proyecto Final Metodos Numericos/
+│
+├── _Pycache/
+│   └── archivos cache
+├── server.py
+├── app.py
+├── templates/
+│   └── index.html
+└── requirements.txt
+
+## Requisitos
+
+-Visual Studio Code
+- Python 3.x
+- Pip (administrador de paquetes de Python)
+- Flask
+- NumPy
+
+## Configuración y Ejecución
+
+### Pasos para Ejecutar 
+
+1. Clonar el Repositorio
+
+git clone https://github.com/
+cd repositorio
+
+2. Instalar dependecias 
+
+pip install -r requirements.txt
+
+3. Ejecutar el Servidor
+
+python server.py
+
+4. Acceder a la Aplicación
+
+Abrir el navegador web y navegar a http://127.0.0.1:5000/.
+
+O Control + Click en el mismo enlace que genera la terminal 
